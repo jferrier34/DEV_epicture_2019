@@ -19,6 +19,7 @@ public class AuthenticationDialog extends Dialog {
     private final String redirect_url;
     public  AuthenticationListener listener;
     public static String accessToken;
+    public static String username;
     private Context context;
 
     public AuthenticationDialog(Context context, AuthenticationListener listener) {
@@ -56,7 +57,7 @@ public class AuthenticationDialog extends Dialog {
             if (url.startsWith(redirect_url)) {
                 AuthenticationDialog.this.dismiss();
                 Intent redir = new Intent(context, Menu1.class);
-                   context.startActivity(redir);
+                context.startActivity(redir);
                 return true;
             }
             return false;
@@ -82,7 +83,32 @@ public class AuthenticationDialog extends Dialog {
             }
         }
 
+        //@Override
+
+        public void onPageFinished2(WebView view, String url) {
+            super.onPageFinished(view, url);
+            if (url.contains("access_token=")) {
+                Uri uri = Uri.EMPTY.parse(url);
+                username = uri.getEncodedFragment();
+                Log.e("all_url", accessToken);
+                username = username.substring(username.indexOf("=") + 3);
+                username = username.substring(0, username.indexOf("&"));
+                Log.e("account_username", username);
+                System.out.println(username);
+                //listener.onTokenReceived(access_token);
+                dismiss();
+            } else if (url.contains("?error")) {
+                Log.e("access_token", "il semble qu'il ne s'agisse pas de votre access token");
+                dismiss();
+            }
+        }
+
     };
+
+    public static String getAccount_username(String username)
+    {
+        return username;
+    }
 
     public static String getAccess_token(String access_token)
     {

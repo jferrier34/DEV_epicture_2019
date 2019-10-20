@@ -26,16 +26,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class gallery extends AppCompatActivity {
+public class favorie extends AppCompatActivity {
 
-    private OkHttpClient httpGetGallery;
-
+    String username = AuthenticationDialog.username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+        setContentView(R.layout.activity_favorie);
         requestData();
+        System.out.println(username);
+
     }
+        private OkHttpClient httpGetGallery;
+
     private static class image {
         String id;
         String title;
@@ -44,7 +47,7 @@ public class gallery extends AppCompatActivity {
     private void requestData() {
         httpGetGallery = new OkHttpClient.Builder().build();
         final Request request = new Request.Builder()
-                .url("https://api.imgur.com/3/gallery/user/rising/0.json")
+                .url("https://api.imgur.com/3/account/jferrier/gallery_favorites")
                 .header("Authorization","Client-ID 480cdf2c81306bc")
                 .header("User-Agent","Epicture")
                 .build();
@@ -57,6 +60,7 @@ public class gallery extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                System.out.println(response);
                 Okreponse(response);
             }
         });
@@ -127,7 +131,7 @@ public class gallery extends AppCompatActivity {
         }
     }
     private void render(final List<image> photos) {
-        RecyclerView rv = (RecyclerView)findViewById(R.id.rv_of_photos);
+        RecyclerView rv = (RecyclerView)findViewById(R.id.rv_favorie_photos);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(new RecyclerView.Adapter<PhotoVH>() {
             @Override
@@ -140,7 +144,7 @@ public class gallery extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(PhotoVH holder, int position) {
-                Picasso.with(gallery.this).load("https://i.imgur.com/" +
+                Picasso.with(favorie.this).load("https://i.imgur.com/" +
                         photos.get(position).id + ".jpg").into(holder.photo);
                 holder.title.setText(photos.get(position).title);
             }
